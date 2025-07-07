@@ -1,0 +1,20 @@
+/* Entry Page Styles */
+body {
+  margin: 0;
+  font-family: 'Lexend', sans-serif;
+  background-color: #4d9e29;
+  color: white;
+  line-height: 1.7;
+  padding: 2rem;
+}
+h1 {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+p {
+  max-width: 700px;
+  margin: 1rem auto;
+  font-size: 1.05rem;
+}
