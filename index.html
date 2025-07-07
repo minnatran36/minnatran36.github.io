@@ -23,7 +23,7 @@
     }
     .column {
       flex: 1;
-      max-height: 480px; /* 30% shorter than 800px */
+      max-height: 400px; /* 30% shorter */
       overflow-y: auto;
       padding-right: 1rem;
       border-right: 1px solid #cceeff;
@@ -54,20 +54,24 @@
       justify-content: space-between;
       align-items: center;
       font-family: 'Lexend', sans-serif;
+      z-index: 1000;
     }
     .subscribe-bar input[type="email"] {
       padding: 0.5rem;
       width: 300px;
       font-family: 'Lexend', sans-serif;
+      border: 1px solid #cceeff;
+      border-radius: 4px;
     }
     .subscribe-bar button {
       padding: 0.5rem 1rem;
-      background-color: #e0f4ff; /* brighter, lighter blue */
+      background-color: #cceeff; /* match separator color */
       color: black;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-family: 'Lexend', sans-serif;
+      margin-left: 0.5rem;
     }
     .post-list {
       list-style-type: none;
