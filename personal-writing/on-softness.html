@@ -2,67 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>On Softness</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style/entry-style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      font-size: 16px;
-    }
-
     body {
       margin: 0;
       font-family: 'Lexend', sans-serif;
-      background-color: #004d40;
+      background-color: #00724c;
       color: white;
-      padding: 1rem;
       line-height: 1.6;
     }
 
-    .entry-page {
-      max-width: 60ch;
-      margin: auto;
-      padding: 2rem 1rem;
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
     }
 
     h1 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
     }
 
     p {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
-    .comments {
+    .giscus-wrapper {
       margin-top: 3rem;
-    }
-
-    @media (max-width: 600px) {
-      .entry-page {
-        padding: 1.5rem 1rem;
-      }
     }
   </style>
 </head>
 <body>
-  <main class="entry-page">
-    <article class="content">
+  <div class="page-wrapper">
+    <div class="container">
       <h1>On Softness</h1>
-      <p>I used to believe that by a certain age, life would start to make sense. That after getting tossed around in your twenties, your thirties would bring calm—some stability, a few anchor truths.</p>
-      <p>And in some ways, that’s true. You begin to see the shape of who you are. You learn what fits and what doesn’t. There’s something quietly powerful in that.</p>
-      <p>But what I didn’t expect was how much the world would keep widening. How every answer tends to crack open another question. And how, instead of clarity, what often arrives is a kind of gentle blur. Maturity, it turns out, isn’t always about certainty—it might be about learning how to live inside the not-knowing.</p>
-      <p>The deeper you go—into yourself, into others—the more you meet contradiction and complexity. And that can harden you. Or it can soften you.</p>
-      <p>I want to stay soft.</p>
-      <p>Not fragile, but receptive. Able to be moved. I want to keep noticing the way afternoon light falls across my kitchen table. The way grief sometimes arrives in the middle of laughter. The way failure can feel strangely tender, if you let it.</p>
-      <p>Softness isn’t weakness.</p>
-      <p>To stay open in a world that keeps telling you to toughen up—maybe that’s the most radical thing of all.</p>
-    </article>
+      <p>I used to think that by a certain point—somewhere in your thirties, maybe—life would settle. That after enough sharp turns and false starts, you’d arrive at something like clarity.</p>
+      <p>And in some ways, you do. You start to know yourself a little better. Some choices get easier. The noise quiets, at least a little.</p>
+      <p>But I didn’t expect how much the world would keep widening. The closer you look—at yourself, at others—the more contradiction you find. The more you understand, the harder it becomes to judge anything simply. And the things that matter most—grief, love, identity, meaning—don’t resolve. They stay open. Learning to live with that openness becomes its own kind of maturity.</p>
+      <p>Hardship can shape you in different ways. It can harden you. Or it can soften you.</p>
+      <p>I want to stay soft. Not fragile—just open. Able to be moved. I want to keep noticing the way light lands on my kitchen table every morning. The way sadness sometimes slips into laughter. The way failure, if you let it, can feel oddly tender.</p>
+      <p>Softness isn’t the opposite of strength. It’s what strength becomes when it’s no longer afraid to feel.</p>
+      <p>That’s the kind of strength I want now—not the kind that resists life, but the kind that lets it in.</p>
+    </div>
 
-    <!-- Giscus Comment Embed -->
-    <section class="comments">
+    <!-- Giscus comment embed -->
+    <div class="giscus-wrapper">
       <script src="https://giscus.app/client.js"
         data-repo="minnatran36/minnatran36.github.io"
         data-repo-id="R_kgDOPIDQVA"
@@ -78,7 +66,7 @@
         crossorigin="anonymous"
         async>
       </script>
-    </section>
-  </main>
+    </div>
+  </div>
 </body>
 </html>
