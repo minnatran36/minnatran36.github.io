@@ -9,8 +9,8 @@
     body {
       margin: 0;
       font-family: 'Lexend', sans-serif;
-      background-color: #fff8dc; /* original light yellow */
-      color: #4d9e29; /* updated green */
+      background-color: #fff8dc;
+      color: #4d9e29;
       line-height: 1.6;
     }
     .container {
@@ -23,49 +23,42 @@
     }
     .column {
       flex: 1;
-      max-height: 400px; /* 30% shorter */
+      max-height: 480px;
       overflow-y: auto;
       padding-right: 1rem;
-      border-right: 1px solid #cceeff;
+      border-right: 3px solid #cceeff;
     }
     .column:last-child {
       border-right: none;
     }
     h1, h2 {
       font-weight: 700;
-      color: #4d9e29; /* updated rich green */
+      color: #4d9e29;
     }
     a {
-      color: #4d9e29; /* updated green links */
+      color: #4d9e29;
       text-decoration: none;
     }
     a:hover {
       text-decoration: underline;
     }
-    .subscribe-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #fff8dc;
-      border-top: 1px solid #cceeff;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Lexend', sans-serif;
-      z-index: 1000;
+    .subscribe-section {
+      margin-top: 2rem;
+      border-top: 3px solid #cceeff;
+      padding-top: 1rem;
     }
-    .subscribe-bar input[type="email"] {
+    .subscribe-section span {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .subscribe-section input[type="email"] {
       padding: 0.5rem;
-      width: 300px;
+      width: 70%;
       font-family: 'Lexend', sans-serif;
-      border: 1px solid #cceeff;
-      border-radius: 4px;
     }
-    .subscribe-bar button {
+    .subscribe-section button {
       padding: 0.5rem 1rem;
-      background-color: #cceeff; /* match separator color */
+      background-color: #e0f4ff;
       color: black;
       border: none;
       border-radius: 8px;
@@ -93,6 +86,11 @@
       <p>You could say I’ve come full circle: starting with the study of human behavior, extending into the technical machinery of computation, and now returning—through NLP—to a more integrated understanding of both. To me, these disciplines aren’t separate. They form a single, connected lens for understanding how we communicate, decide, and design the systems we live in.</p>
       <p>As a young mother raising a son in a rapidly changing world, I see firsthand how the technologies we create today will shape the world he inherits. This work feels both personal and urgent. I want to help build a future that is not just technologically advanced, but also sustainable, humane, and worthy of the next generation—children like my own.</p>
       <p>Einstein once said, "Concern for man himself and his fate must always form the chief interest of all technical endeavors." That belief guides everything I do. I want to contribute to technologies that are not just intelligent, but ethical—tools that expand access to knowledge, make decisions more transparent, and strengthen our communities. My conviction is simple: technology should extend our humanity. One cannot thrive without the other.</p>
+      <div class="subscribe-section">
+        <span>Stay in touch — I'll reach out when I have something meaningful to share.</span>
+        <input type="email" placeholder="Your email, please">
+        <button>Subscribe</button>
+      </div>
     </div>
 
     <!-- Column 2: Academic Projects -->
@@ -115,14 +113,6 @@
         <li><a href="#">Living Without a Map</a><br><small>Trusting paths not yet drawn</small></li>
         <li><a href="#">The Quiet Resistance</a><br><small>Why gentleness is political</small></li>
       </ul>
-    </div>
-  </div>
-
-  <div class="subscribe-bar">
-    <span>Stay in touch — I'll reach out when I have something meaningful to share.</span>
-    <div>
-      <input type="email" placeholder="Your email, please">
-      <button>Subscribe</button>
     </div>
   </div>
 </body>
