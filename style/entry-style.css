@@ -8,6 +8,7 @@ body {
 }
 
 
+
 .page-wrapper {
   max-width: 720px;
   margin: 0 auto;
@@ -95,10 +96,6 @@ p {
 
 /* === Mobile Tweaks === */
 @media (max-width: 600px) {
-  .page-wrapper {
-    padding-bottom: 18rem; /* more generous space for tall subscribe bar */
-  }
-  
   h1 {
     text-align: center;
   }
