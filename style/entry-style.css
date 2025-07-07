@@ -4,27 +4,34 @@ body {
   color: white;
   margin: 0;
   padding: 0;
+  line-height: 1.8;
 }
 
 .page-wrapper {
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: clamp(1rem, 5vw, 3rem);
 }
 
 .container {
-  margin-bottom: 60px;
+  margin-bottom: 4rem;
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin-bottom: 1.5rem;
 }
 
 p {
-  font-size: 1.2em;
-  line-height: 1.8;
-  margin-bottom: 18px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  max-width: 65ch;
+  margin-bottom: 1.25rem;
+}
+
+/* Optional enhancement: tighter width for improved reading */
+.container p {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Giscus iframe container fix */
@@ -32,41 +39,19 @@ p {
   background: white;
   padding: 1em;
   border-radius: 12px;
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
   color: black;
+  overflow-x: auto;
 }
 
-/* ====== Responsive Tweaks ====== */
-@media (max-width: 768px) {
-  .page-wrapper {
-    padding: 30px 16px;
-  }
-
-  h1 {
-    font-size: 2em;
-  }
-
-  p {
-    font-size: 1.1em;
-  }
-}
-
+/* Light responsive refinement */
 @media (max-width: 480px) {
-  .page-wrapper {
-    padding: 20px 12px;
-  }
-
   h1 {
-    font-size: 1.7em;
     text-align: center;
   }
 
-  p {
-    font-size: 1em;
-  }
-
   .giscus-wrapper {
-    padding: 0.7em;
+    padding: 0.75em;
   }
 }
