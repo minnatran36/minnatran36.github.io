@@ -29,7 +29,6 @@
       gap: 2rem;
       max-width: 1200px;
       margin: auto;
-      position: relative;
     }
     .column {
       flex: 1;
@@ -77,7 +76,7 @@
     .subscribe-bar input[type="email"] {
       padding: 0.3rem;
       font-family: 'Lexend', sans-serif;
-      width: 180px;
+      width: 200px;
       margin: 0 0.5rem;
     }
     .subscribe-bar button {
@@ -85,7 +84,7 @@
       background-color: white;
       color: #4d9e29;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       font-family: 'Lexend', sans-serif;
       font-size: 0.75rem;
@@ -100,12 +99,13 @@
     .subheading-smaller {
       font-size: 0.9rem;
     }
-    .flowers-background {
-      position: absolute;
+    .flower-img {
+      position: fixed;
       bottom: 0;
       right: 0;
-      max-width: 250px;
+      width: 300px;
       opacity: 0.2;
+      z-index: 0;
     }
   </style>
 </head>
@@ -116,11 +116,12 @@
     <!-- Column 1: About Me -->
     <div class="column">
       <h2>About Me</h2>
-      <p>I believe that behind every algorithm and every breakthrough lies a deeper question: What kind of world are we building—and for whom?</p>
-      <p>I'm currently pursuing a Master's in Computer Science with a focus on Natural Language Processing—a field that captivates me because it lives at the intersection of machine logic and human meaning. My background spans computer science, economics, and finance. I began in economics and behavioral science, drawn to the question of how people make decisions and shape systems—but I soon realized that theory alone wasn’t enough. We need tools to anchor these ideas, to test and build. That’s what led me to computer science.</p>
-      <p>You could say I’ve come full circle: starting with the study of human behavior, extending into the technical machinery of computation, and now returning—through NLP—to a more integrated understanding of both. To me, these disciplines aren’t separate. They form a single, connected lens for understanding how we communicate, decide, and design the systems we live in.</p>
-      <p>As a young mother raising a son in a rapidly changing world, I see firsthand how the technologies we create today will shape the world he inherits. This work feels both personal and urgent. I want to help build a future that is not just technologically advanced, but also sustainable, humane, and worthy of the next generation—children like my own.</p>
-      <p>Einstein once said, "Concern for man himself and his fate must always form the chief interest of all technical endeavors." That belief guides everything I do. I want to contribute to technologies that are not just intelligent, but ethical—tools that expand access to knowledge, make decisions more transparent, and strengthen our communities. My conviction is simple: technology should extend our humanity. One cannot thrive without the other.</p>
+      <p>I believe that behind every algorithm and breakthrough lies a deeper question: What kind of world are we building—and for whom?</p>
+      <p>I’m studying Computer Science with a focus on Natural Language Processing, a field that lives at the intersection of two things I care deeply about: how we build machines, and how we make meaning.</p>
+      <p>I didn’t start in tech. My path began in economics and behavioral science, drawn to understanding how people think and make decisions. But theory alone felt too abstract. I wanted tools—to build, to test, to see ideas take shape. That search led me to computer science.</p>
+      <p>Now, through NLP, I’ve found a way to bring it all together: language, logic, behavior, and systems. These don’t feel like separate disciplines to me—they’re just different lenses on the same questions about how we live and connect.</p>
+      <p>This work is also personal. I’m raising a son in a fast-changing world, and I often think about the future he’ll inherit. I want to help shape technology that isn’t just powerful, but thoughtful—tools that care about the people they touch.</p>
+      <p>Einstein once said, “Concern for man himself and his fate must always form the chief interest of all technical endeavors.” That’s the spirit I try to carry into my work.</p>
     </div>
 
     <!-- Column 2: Academic Projects -->
@@ -144,7 +145,6 @@
         <li><a href="#">The Quiet Resistance</a><br><small>Why gentleness is political</small></li>
       </ul>
     </div>
-    <img src="pics/flowers.png" class="flowers-background" alt="Flowers background">
   </div>
 
   <!-- Fixed Subscribe Section -->
@@ -153,5 +153,7 @@
     <input type="email" placeholder="Your email, please">
     <button>Subscribe</button>
   </div>
+
+  <img src="pics/boy-and-friends.png" alt="Boy and Friends" class="flower-img">
 </body>
 </html>
