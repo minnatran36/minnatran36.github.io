@@ -2,14 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>On Softness</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style/entry-style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Lexend', sans-serif;
+      background-color: #004d40;
+      color: white;
+      padding: 1rem;
+      line-height: 1.6;
+    }
+
+    .entry-page {
+      max-width: 60ch;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      margin-bottom: 1rem;
+    }
+
+    .comments {
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 600px) {
+      .entry-page {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <div class="container">
+  <main class="entry-page">
+    <article class="content">
       <h1>On Softness</h1>
       <p>I used to believe that by a certain age, life would start to make sense. That after getting tossed around in your twenties, your thirties would bring calm—some stability, a few anchor truths.</p>
       <p>And in some ways, that’s true. You begin to see the shape of who you are. You learn what fits and what doesn’t. There’s something quietly powerful in that.</p>
@@ -19,10 +59,10 @@
       <p>Not fragile, but receptive. Able to be moved. I want to keep noticing the way afternoon light falls across my kitchen table. The way grief sometimes arrives in the middle of laughter. The way failure can feel strangely tender, if you let it.</p>
       <p>Softness isn’t weakness.</p>
       <p>To stay open in a world that keeps telling you to toughen up—maybe that’s the most radical thing of all.</p>
-    </div>
+    </article>
 
-    <!-- Giscus comment embed -->
-    <div class="giscus-wrapper">
+    <!-- Giscus Comment Embed -->
+    <section class="comments">
       <script src="https://giscus.app/client.js"
         data-repo="minnatran36/minnatran36.github.io"
         data-repo-id="R_kgDOPIDQVA"
@@ -38,7 +78,7 @@
         crossorigin="anonymous"
         async>
       </script>
-    </div>
-  </div>
+    </section>
+  </main>
 </body>
 </html>
