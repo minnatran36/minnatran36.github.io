@@ -5,7 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Minna’s Greenhouse</title>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style/entry-style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Lexend', sans-serif;
+      background-color: #00724c;
+      color: white;
+      line-height: 1.6;
+      padding-bottom: 100px;
+    }
+
+    header.site-header {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background-color: #00724c;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 2rem 1rem;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .column {
+      flex: 1 1 100%;
+      padding-right: 0;
+      border-right: none;
+      max-height: none;
+      overflow: visible;
+    }
+
+    h1, h2 {
+      font-weight: 700;
+      color: white;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .subscribe-bar {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(0, 114, 76, 0.95);
+      border-top: 4px solid #ffffff;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+      padding: 0.5rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      gap: 0.5rem;
+    }
+
+    .subscribe-bar span {
+      font-size: 1rem;
+      flex-basis: 100%;
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+
+    .subscribe-bar input[type="email"] {
+      padding: 0.3rem;
+      font-family: 'Lexend', sans-serif;
+      width: 100%;
+      max-width: 220px;
+    }
+
+    .subscribe-bar button {
+      padding: 0.3rem 0.8rem;
+      background-color: white;
+      color: #00724c;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Lexend', sans-serif;
+      font-size: 0.8rem;
+    }
+
+    .post-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .post-list li {
+      margin-bottom: 0.8rem;
+    }
+
+    .subheading-smaller {
+      font-size: 0.85rem;
+    }
+
+    .flower-img {
+      position: fixed;
+      bottom: 90px;
+      right: 0;
+      height: 240px;
+      width: auto;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    @media (min-width: 768px) {
+      .column {
+        flex: 1;
+        max-height: 420px;
+        overflow-y: auto;
+        padding-right: 1rem;
+        border-right: 4px solid #ffffff;
+      }
+
+      .column:last-child {
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header.site-header {
+        font-size: 2rem;
+        padding: 1.5rem 1rem;
+      }
+
+      .subscribe-bar input[type="email"],
+      .subscribe-bar button {
+        font-size: 1rem;
+      }
+
+      .flower-img {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">Minna.</header>
@@ -44,7 +187,7 @@
 
   <!-- Fixed Subscribe Section -->
   <div class="subscribe-bar">
-    <span>Stay in touch — I’ll reach out when I have something meaningful to share.</span>
+    <span>Stay in touch — I'll reach out when I have something meaningful to share.</span>
     <input type="email" placeholder="Your email, please" />
     <button>Subscribe</button>
   </div>
