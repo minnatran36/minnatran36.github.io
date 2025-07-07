@@ -7,12 +7,14 @@ body {
   line-height: 1.8;
 }
 
+
 .page-wrapper {
   max-width: 720px;
   margin: 0 auto;
   padding: clamp(1rem, 5vw, 3rem);
-  padding-bottom: 10rem; /* Add space for fixed subscribe bar */
+  padding-bottom: 16rem; /* ← was 10rem; now allows space for multiline subscribe bar */
 }
+
 
 .container {
   margin-bottom: 4rem;
@@ -93,6 +95,10 @@ p {
 
 /* === Mobile Tweaks === */
 @media (max-width: 600px) {
+  .page-wrapper {
+    padding-bottom: 18rem; /* more generous space for tall subscribe bar */
+  }
+  
   h1 {
     text-align: center;
   }
