@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minna’s Thinking Space</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #fff7f2;
+      color: #2a0a58;
+      line-height: 1.6;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      padding: 2rem;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .column {
+      flex: 1;
+    }
+    h1, h2 {
+      font-weight: 700;
+      color: #4b00ff;
+    }
+    a {
+      color: #4b00ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    input[type="email"] {
+      padding: 0.5rem;
+      width: 80%;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #4b00ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .post-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .post-list li {
+      margin-bottom: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Column 1: About Me -->
+    <div class="column">
+      <h1>Minna</h1>
+      <p>I’m a curious mind interested in building things, understanding people, and unraveling systems. My work spans computer science, behavioral science, and the human edges of AI.</p>
+      <p>I care about creating tools that help people think and live more honestly. This site is where I collect what I learn, build, and question.</p>
+      <p>Want to hear when I publish new work?</p>
+      <input type="email" placeholder="Your email, please">
+      <br>
+      <button>Subscribe</button>
+    </div>
+
+    <!-- Column 2: Academic Projects -->
+    <div class="column">
+      <h2>Projects: Thinking Systems</h2>
+      <p>On learning, cognition, computational creativity, and understanding how tools shape minds.</p>
+      <ul class="post-list">
+        <li><a href="#">TED Talk Moral Gap Analyzer</a><br><small>NLP + ethics project on public vs private morality</small></li>
+        <li><a href="#">Wild Meadow Generator</a><br><small>L-systems for algorithmic nature</small></li>
+        <li><a href="#">Medical Intuition Project</a><br><small>Patterns of patient dismissal in clinical data</small></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Personal Writing -->
+    <div class="column">
+      <h2>Letters to Myself</h2>
+      <p>Reflections on life, softness, growth, and the blur of becoming.</p>
+      <ul class="post-list">
+        <li><a href="#">On Choosing Softness</a><br><small>Growing inside the blur of uncertainty</small></li>
+        <li><a href="#">Living Without a Map</a><br><small>Trusting paths not yet drawn</small></li>
+        <li><a href="#">The Quiet Resistance</a><br><small>Why gentleness is political</small></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
