@@ -16,8 +16,8 @@
     }
     header.site-header {
       text-align: center;
-      padding: 1rem 2rem;
-      font-size: 3rem;
+      padding: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       background-color: #4d9e29;
       color: white;
@@ -62,34 +62,32 @@
       padding: 0.5rem 1rem;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       z-index: 1000;
     }
     .subscribe-bar span {
-      font-size: 0.875rem;
+      font-size: 1rem;
       color: white;
-      flex: 1 1 100%;
-      margin-bottom: 0.25rem;
+      flex-basis: 100%;
+      text-align: center;
+      margin-bottom: 0.3rem;
     }
     .subscribe-bar input[type="email"] {
       padding: 0.3rem;
       font-family: 'Lexend', sans-serif;
-      flex: 1 1 50%;
-      max-width: 250px;
-      font-size: 0.85rem;
-      margin-right: 0.5rem;
+      width: 220px;
+      margin: 0 0.5rem;
     }
     .subscribe-bar button {
-      padding: 0.3rem 0.6rem;
+      padding: 0.3rem 0.8rem;
       background-color: white;
       color: #4d9e29;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.85rem;
       font-family: 'Lexend', sans-serif;
-      flex: 0 0 auto;
+      font-size: 0.8rem;
     }
     .post-list {
       list-style-type: none;
@@ -97,6 +95,9 @@
     }
     .post-list li {
       margin-bottom: 0.8rem;
+    }
+    .subheading-smaller {
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -117,7 +118,7 @@
     <!-- Column 2: Academic Projects -->
     <div class="column">
       <h2>Projects</h2>
-      <p>On learning, cognition, computational creativity, and understanding how tools shape minds.</p>
+      <p class="subheading-smaller">On learning, cognition, computational creativity, and understanding how tools shape minds.</p>
       <ul class="post-list">
         <li><a href="#">TED Talk Moral Gap Analyzer</a><br><small>NLP + ethics project on public vs private morality</small></li>
         <li><a href="#">Wild Meadow Generator</a><br><small>L-systems for algorithmic nature</small></li>
@@ -128,7 +129,7 @@
     <!-- Column 3: Personal Writing -->
     <div class="column">
       <h2>Personal Writing</h2>
-      <p>Reflections on life, softness, growth, and the blur of becoming.</p>
+      <p class="subheading-smaller">Reflections on life and becoming.</p>
       <ul class="post-list">
         <li><a href="#">On Choosing Softness</a><br><small>Growing inside the blur of uncertainty</small></li>
         <li><a href="#">Living Without a Map</a><br><small>Trusting paths not yet drawn</small></li>
