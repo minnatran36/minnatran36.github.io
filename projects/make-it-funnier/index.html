@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Make It Funnier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --green:#00724c;
+      --green-dark:#005b3d;
+      --cream:#ffe8b3;
+      --white:#ffffff;
+      --ink:#ffffff;
+      --muted:#e9f7ef;
+      --card:#026a49;
+      --ring:#ffffff40;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Lexend',system-ui,Segoe UI,Roboto,Arial;
+      background:var(--green);
+      color:var(--ink);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      padding-bottom:96px;
+    }
+    header{
+      padding:28px 16px 8px;
+      text-align:center;
+    }
+    .title{
+      font-size:32px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color:var(--cream);
+      max-width:780px;
+      margin:6px auto 0;
+      padding:0 12px;
+    }
+
+    .wrap{
+      max-width:900px;
+      margin:24px auto;
+      padding:0 16px 24px;
+    }
+    .card{
+      background:linear-gradient(180deg,var(--card),var(--green));
+      border:2px solid var(--ring);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .label{
+      font-size:12px;
+      color:var(--cream);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin:6px 0;
+    }
+    textarea,select,input[type="range"]{
+      width:100%;
+      font-family:'Lexend',system-ui;
+      color:var(--ink);
+      background:rgba(0,0,0,.12);
+      border:2px solid var(--ring);
+      border-radius:14px;
+      padding:12px;
+      outline:none;
+      transition:border .15s ease, background .15s ease;
+    }
+    textarea:focus,select:focus,input[type="range"]:focus{
+      border-color:var(--white);
+      background:rgba(0,0,0,.18);
+    }
+    textarea{min-height:120px; resize:vertical}
+
+    .row{display:grid; gap:14px; grid-template-columns:1fr 1fr}
+    @media (max-width:720px){ .row{grid-template-columns:1fr} }
+
+    .range-row{display:flex; align-items:center; gap:12px; color:var(--muted)}
+    .meter{height:6px; background:rgba(255,255,255,.18); border-radius:999px; overflow:hidden}
+    .bar{height:100%; width:0%; background:linear-gradient(90deg,#fff,#ffe8b3); transition:width .25s ease}
+
+    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px}
+    button{
+      border:0;
+      border-radius:12px;
+      cursor:pointer;
+      font-family:'Lexend',system-ui;
+      padding:10px 14px;
+      font-weight:700;
+      transition:transform .06s ease, filter .06s ease, background .15s ease;
+    }
+    .primary{background:var(--white); color:var(--green-dark)}
+    .secondary{background:transparent; color:var(--white); border:2px solid var(--ring)}
+    button:active{transform:translateY(1px); filter:brightness(.96)}
+
+    .output{
+      margin-top:14px;
+      padding:14px;
+      border:2px dashed var(--ring);
+      border-radius:14px;
+      background:rgba(0,0,0,.10);
+      min-height:70px;
+      color:#fff;
+    }
+    .fade-in{animation:fade .25s ease}
+    @keyframes fade{from{opacity:.3; transform:translateY(2px)} to{opacity:1; transform:none}}
+
+    /* Footer subscribe bar (matches your site) */
+    .subscribe-bar{
+      position:fixed; left:0; bottom:0; width:100%;
+      background-color:rgba(0,114,76,.95);
+      border-top:2px solid var(--white);
+      padding:.5rem .8rem;
+      display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:.5rem;
+      z-index:1000; color:#fff;
+    }
+    .subscribe-bar span{flex-basis:100%; text-align:center; font-size:.9rem}
+    .subscribe-bar input{padding:.3rem; font-family:'Lexend'; max-width:220px; width:100%}
+    .subscribe-bar button{padding:.35rem .8rem; background:#fff; color:var(--green-dark); border:none; border-radius:8px; font-family:'Lexend'}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Make It Funnier</div>
+    <div class="sub">Paste a sentence. Choose a style. Turn up the spice. </br>
+      Won’t promise comedy gold, but might deliver brass with glitter.</div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="label">Your sentence</div>
+      <textarea id="input" placeholder="sth funny"></textarea>
+
+      <div class="row" style="margin-top:12px">
+        <div>
+          <div class="label">Style</div>
+          <select id="style">
+            <option value="deadpan">Deadpan</option>
+            <option value="wry">Wry</option>
+            <option value="absurdist">Absurdist</option>
+            <option value="self-roast">Self-roast</option>
+            <option value="wholesome">Wholesome</option>
+          </select>
+        </div>
+        <div>
+          <div class="label">Spice (0–3)</div>
+          <div class="range-row">
+            <input id="spice" type="range" min="0" max="3" step="1" value="1"/>
+            <span id="spiceVal">1</span>
+          </div>
+          <div class="meter" style="margin-top:8px"><div id="spiceBar" class="bar" style="width:33%"></div></div>
+          <div style="color:var(--muted); font-size:.9rem; margin-top:6px">Higher spice allows bigger rephrasing and punchline risk.</div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button id="goBtn" class="primary">Make it funnier</button>
+        <button id="remixBtn" class="secondary">Remix</button>
+        <button id="copyBtn" class="secondary">Copy</button>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="label">Result</div>
+        <div id="output" class="output"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Subscribe bar to mirror your site -->
+  <div class="subscribe-bar">
+    <span>Stay in touch — I'll reach out when I have something meaningful to share.</span>
+    <input type="email" placeholder="Your email"/>
+    <button>Subscribe</button>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const style = document.getElementById('style');
+    const spice = document.getElementById('spice');
+    const spiceVal = document.getElementById('spiceVal');
+    const spiceBar = document.getElementById('spiceBar');
+    const goBtn = document.getElementById('goBtn');
+    const remixBtn = document.getElementById('remixBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const output = document.getElementById('output');
+
+    spice.addEventListener('input', () => {
+      spiceVal.textContent = spice.value;
+      const pct = (spice.value/3)*100;
+      spiceBar.style.width = pct + '%';
+    });
+
+    let lastPayload = null;
+
+    async function callFunnyAPI(payload){
+      output.textContent = '';
+      output.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:8px"></span> Punching up your line...';
+      try{
+        const res = await fetch('https://make-it-funnier.onrender.com/api/funny',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(payload)
+        });
+        if(!res.ok){
+          const t = await res.text();
+          throw new Error(t || ('HTTP '+res.status));
+        }
+        const data = await res.json();
+        output.textContent = data.output?.trim() || '(No response)';
+        output.classList.add('fade-in');
+        setTimeout(()=>output.classList.remove('fade-in'),200);
+      }catch(err){
+        output.textContent = 'Error: ' + (err.message || err);
+      }
+    }
+
+    goBtn.addEventListener('click',()=>{
+      const text = (input.value||'').trim();
+      if(!text){ output.textContent='Give me something to punch up.'; return; }
+      lastPayload = { text, style: style.value, spice: Number(spice.value), remixSeed: Math.random().toString(36).slice(2) };
+      callFunnyAPI(lastPayload);
+    });
+
+    remixBtn.addEventListener('click',()=>{
+      if(!lastPayload){ goBtn.click(); return; }
+      lastPayload = { ...lastPayload, remixSeed: Math.random().toString(36).slice(2) };
+      callFunnyAPI(lastPayload);
+    });
+
+    copyBtn.addEventListener('click', async ()=>{
+      const t = output.textContent.trim();
+      if(!t) return;
+      await navigator.clipboard.writeText(t);
+      copyBtn.textContent='Copied!';
+      setTimeout(()=>copyBtn.textContent='Copy',800);
+    });
+
+    // Starter text
+    input.value = "Roses are red and violets are blue.";
+  </script>
+
+  <style>
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</body>
+</html>
