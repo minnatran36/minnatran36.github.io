@@ -56,3 +56,25 @@ p {
     padding: 0.75em;
   }
 }
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  background-color: #90ee90
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+  color: #ffe8b3; /* matches your accent color */
+}
