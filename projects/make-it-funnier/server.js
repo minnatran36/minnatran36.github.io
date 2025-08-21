@@ -6,10 +6,22 @@ import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
-app.use(express.json());
-app.use(cors({
-  origin: ["https://minnatran36.github.io", "http://localhost:3000"]
-}));
+// Allow JSON bodies
+app.use(express.json({ limit: '1mb' }));
+// CORS: allow your Pages origin and localhost
+const corsOptions = {
+origin: [
+   'https://minnatran36.github.io',
+   'http://localhost:3000',
+    'http://localhost:5173'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  // Let the library reflect whatever headers the browser asks for.
+  // (If you MUST pin later, include Authorization, Accept, X-Requested-With, and UA-CH headers.)
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // handle all preflights
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,6 +100,9 @@ Respond with only the funnier single-sentence rewrite, no quotes.`;
     res.status(500).json({ error: String(e?.message || e) });
   }
 });
+
+app.get('/api/health', (_req, res) => res.json({ ok: true }));
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`> http://localhost:${PORT}`));

@@ -209,7 +209,7 @@
       output.textContent = '';
       output.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:8px"></span> Punching up your line...';
       try{
-        const res = await fetch('https://make-it-funnier.onrender.com/api/funny',{
+        const res = await fetch('https://make-it-funnier-api.vercel.app/api/funny',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify(payload)
