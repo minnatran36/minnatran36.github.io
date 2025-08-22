@@ -1,3 +1,6 @@
+console.log("[returns] using Alpha Vantage, MARKET_API_KEY starts with:", (process.env.MARKET_API_KEY||"").slice(0,4));
+
+
 const express = require("express");
 const router = express.Router();
 const { fetchDailyAdjCloses } = require("../services/marketData");
