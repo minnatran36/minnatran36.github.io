@@ -24,6 +24,9 @@ let similarities = {};       // Pre-computed similar products
 let basket = [];             // User's current basket
 let currentFilter = null;    // Current department filter
 let searchQuery = '';        // Current search query
+let displayedCount = 0;      // How many products currently displayed
+const BATCH_SIZE = 100;      // Products to load per batch
+let filteredProducts = [];   // Current filtered product list
 
 
 // =============================================================================
@@ -103,33 +106,78 @@ function renderFilters() {
 }
 
 /**
- * Render the product grid.
+ * Apply filters and reset display count.
  */
-function renderProducts() {
-    const grid = document.getElementById('products-grid');
-    
-    // Filter products
-    let filtered = products;
+function applyFilters() {
+    // Start with all products
+    filteredProducts = products;
     
     // Apply department filter
     if (currentFilter) {
-        filtered = filtered.filter(p => p.department === currentFilter);
+        filteredProducts = filteredProducts.filter(p => p.department === currentFilter);
     }
     
     // Apply search filter
     if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(p => 
+        filteredProducts = filteredProducts.filter(p => 
             p.name.toLowerCase().includes(query)
         );
     }
     
-    // Limit display (for performance)
-    const displayProducts = filtered.slice(0, 200);
+    // Reset display count when filters change
+    displayedCount = 0;
+}
+
+/**
+ * Render the product grid with "Load More" functionality.
+ */
+function renderProducts() {
+    applyFilters();
     
-    // Render
+    const grid = document.getElementById('products-grid');
+    
+    // Get next batch of products
+    const displayProducts = filteredProducts.slice(0, BATCH_SIZE);
+    displayedCount = displayProducts.length;
+    
+    // Render products
+    let html = renderProductButtons(displayProducts);
+    
+    if (displayProducts.length === 0) {
+        html = '<p style="color: #64748b; padding: 20px; text-align: center;">No products found</p>';
+    }
+    
+    grid.innerHTML = html;
+    
+    // Update the load more section
+    updateLoadMoreSection();
+}
+
+/**
+ * Load more products (append to existing).
+ */
+function loadMoreProducts() {
+    const grid = document.getElementById('products-grid');
+    
+    // Get next batch
+    const nextBatch = filteredProducts.slice(displayedCount, displayedCount + BATCH_SIZE);
+    displayedCount += nextBatch.length;
+    
+    // Append new products
+    const html = renderProductButtons(nextBatch);
+    grid.insertAdjacentHTML('beforeend', html);
+    
+    // Update the load more section
+    updateLoadMoreSection();
+}
+
+/**
+ * Render product buttons HTML.
+ */
+function renderProductButtons(productList) {
     let html = '';
-    for (const product of displayProducts) {
+    for (const product of productList) {
         const inBasket = basket.includes(product.name);
         html += `
             <button class="product-btn ${inBasket ? 'in-basket' : ''}" 
@@ -138,12 +186,44 @@ function renderProducts() {
             </button>
         `;
     }
+    return html;
+}
+
+/**
+ * Update the "Load More" section with count and button.
+ */
+function updateLoadMoreSection() {
+    let loadMoreSection = document.getElementById('load-more-section');
     
-    if (displayProducts.length === 0) {
-        html = '<p style="color: #64748b; padding: 20px; text-align: center;">No products found</p>';
+    // Create section if it doesn't exist
+    if (!loadMoreSection) {
+        loadMoreSection = document.createElement('div');
+        loadMoreSection.id = 'load-more-section';
+        loadMoreSection.style.cssText = 'text-align: center; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;';
+        document.getElementById('products-grid').insertAdjacentElement('afterend', loadMoreSection);
     }
     
-    grid.innerHTML = html;
+    const remaining = filteredProducts.length - displayedCount;
+    const total = filteredProducts.length;
+    
+    let html = `
+        <p style="color: #94a3b8; font-size: 14px; margin: 0;">
+            Showing <strong style="color: #e2e8f0;">${displayedCount.toLocaleString()}</strong> of 
+            <strong style="color: #e2e8f0;">${total.toLocaleString()}</strong> products
+        </p>
+    `;
+    
+    if (remaining > 0) {
+        const nextBatchSize = Math.min(remaining, BATCH_SIZE);
+        html += `
+            <button id="load-more-btn" class="load-more-btn">
+                Load ${nextBatchSize.toLocaleString()} More
+                <span style="opacity: 0.7; margin-left: 4px;">(${remaining.toLocaleString()} remaining)</span>
+            </button>
+        `;
+    }
+    
+    loadMoreSection.innerHTML = html;
 }
 
 /**
@@ -176,8 +256,23 @@ function renderBasket() {
     // Update predictions
     renderPredictions();
     
-    // Update product grid to show which items are in basket
-    renderProducts();
+    // Update product grid to show which items are in basket (preserve scroll position)
+    updateBasketHighlights();
+}
+
+/**
+ * Update basket highlights without re-rendering everything.
+ */
+function updateBasketHighlights() {
+    const buttons = document.querySelectorAll('.product-btn');
+    buttons.forEach(btn => {
+        const productName = btn.dataset.product;
+        if (basket.includes(productName)) {
+            btn.classList.add('in-basket');
+        } else {
+            btn.classList.remove('in-basket');
+        }
+    });
 }
 
 /**
@@ -264,11 +359,15 @@ function renderPredictions() {
  * Set up all event listeners.
  */
 function setupEventListeners() {
-    // Search input
+    // Search input with debounce
     const searchInput = document.getElementById('search-input');
+    let searchTimeout;
     searchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value;
-        renderProducts();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchQuery = e.target.value;
+            renderProducts();
+        }, 150); // Small debounce for better performance
     });
     
     // Filter buttons (event delegation)
@@ -290,6 +389,13 @@ function setupEventListeners() {
         if (btn) {
             const productName = btn.dataset.product;
             toggleBasketItem(productName);
+        }
+    });
+    
+    // Load More button (event delegation on document since it's dynamically added)
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'load-more-btn' || e.target.closest('#load-more-btn')) {
+            loadMoreProducts();
         }
     });
     
