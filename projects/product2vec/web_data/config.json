@@ -1,0 +1,10 @@
+{
+  "model_name": "Product2Vec",
+  "description": "Word2Vec trained on Instacart shopping baskets",
+  "num_products": 7374,
+  "vector_dimensions": 100,
+  "algorithm": "Skip-gram with Negative Sampling",
+  "training_data": "Instacart Online Grocery Shopping Dataset 2017",
+  "num_baskets": "~3.2 million",
+  "paper": "Mikolov et al. (2013) - Efficient Estimation of Word Representations"
+}

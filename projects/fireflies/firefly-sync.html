@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Firefly Synchronization</title>
+  
+  <!-- MathJax for LaTeX rendering -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style/entry-style.css" />
+  
+  <style>
+    .navbar {
+      background-color: #90EE90;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .navbar a {
+      color: #00724c;
+      text-decoration: none;
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Lexend', sans-serif;
+      background-color: #00724c;
+      color: white;
+      line-height: 1.6;
+    }
+
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+    }
+
+    .giscus-wrapper {
+      margin-top: 3rem;
+    }
+
+    /* Simulation-specific styles */
+    :root {
+      --accent: #ffe8b3;
+      --text-muted: rgba(255, 255, 255, 0.8);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+    }
+
+    .metrics-row {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric {
+      text-align: center;
+    }
+
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .firefly-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 0.75rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .canvas-wrapper {
+      width: 100%;
+      height: 280px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    #firefly-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .coherence-section {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 0.75rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+
+    .coherence-bar-container {
+      height: 18px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+
+    .coherence-bar {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 232, 179, 0.5), var(--accent));
+      border-radius: 9px;
+      transition: width 0.3s ease;
+    }
+
+    .coherence-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 0.75rem;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .control-title {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .control-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Lexend', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-glow {
+      background: white;
+      color: #00724c;
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ESSAY STYLES
+       ═══════════════════════════════════════════════════════════════ */
+
+    .essay {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .essay h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .essay h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .essay p {
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .essay strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    .essay em {
+      font-style: italic;
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .essay a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .essay a:hover {
+      opacity: 0.8;
+    }
+
+    .essay hr {
+      border: none;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 2rem 0;
+    }
+
+    .formula {
+      margin: 1.5rem 0;
+      padding: 1.25rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .formula-explanation {
+      margin: 1.25rem 0;
+      padding-left: 1rem;
+      border-left: 3px solid rgba(255, 232, 179, 0.5);
+    }
+
+    .formula-explanation p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .formula-explanation p:last-child {
+      margin-bottom: 0;
+    }
+
+    .closing {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-style: italic;
+    }
+
+    /* MathJax color override */
+    mjx-container {
+      color: white !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="../../index.html">Home</a>
+    
+  </nav>
+
+  <div class="page-wrapper">
+    <h1>Fireflies & The Kuramoto Model</h1>
+    <p class="subtitle">Interactive simulation + the math behind synchronized flashing</p>
+
+    <!-- Metrics -->
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value" id="coherence-value">0.00</div>
+        <div class="metric-label">Synchronization</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="firefly-count">50</div>
+        <div class="metric-label">Fireflies</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" id="time-value">0.0s</div>
+        <div class="metric-label">Time</div>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="firefly-container">
+      <div class="canvas-wrapper">
+        <canvas id="firefly-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Coherence Bar -->
+    <div class="coherence-section">
+      <div class="section-title">Coherence — From Chaos to Chorus</div>
+      <div class="coherence-bar-container">
+        <div class="coherence-bar" id="coherence-bar" style="width: 20%"></div>
+      </div>
+      <div class="coherence-labels">
+        <span>Chaos</span>
+        <span>Partial</span>
+        <span>Sync</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-grid">
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-title">Coupling (K)</span>
+          <span class="control-value" id="k-display">0.50</span>
+        </div>
+        <input type="range" id="k-slider" min="0" max="2" step="0.1" value="0.5">
+      </div>
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-title">Fireflies</span>
+          <span class="control-value" id="count-display">50</span>
+        </div>
+        <input type="range" id="count-slider" min="10" max="150" step="10" value="50">
+      </div>
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-title">Flash Period</span>
+          <span class="control-value" id="period-display">2.0s</span>
+        </div>
+        <input type="range" id="period-slider" min="0.5" max="4" step="0.25" value="2">
+      </div>
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-title">Vision Radius</span>
+          <span class="control-value" id="radius-display">150px</span>
+        </div>
+        <input type="range" id="radius-slider" min="50" max="300" step="25" value="150">
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-row">
+      <button class="btn-glow" id="start-btn">✦ Begin</button>
+      <button class="btn-outline" id="scramble-btn">↻ Scramble</button>
+      <button class="btn-outline" id="reset-btn">Reset</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ESSAY CONTENT
+         ═══════════════════════════════════════════════════════════════ -->
+    <article class="essay">
+      <h2>Waves at the Crosswalk</h2>
+      
+      <p>Waiting to cross the street, I notice cars don't flow steadily. They arrive in waves—a cluster passes, a pause, another cluster. That pause is my chance to cross.</p>
+      
+      <p>The pattern tells a story: somewhere upstream, a traffic light gathers cars at red and releases them together at green. And if the waves stay clean all the way to me, the lights must be synchronized. Otherwise each wave would hit a red, scatter, and dissolve into noise.</p>
+      
+      <p>I built a small simulation of this once, using threads and barriers (<a href="kuramoto.pdf">you can read more here</a>). But the idea appears far beyond traffic—most beautifully, in fireflies.</p>
+      
+      <hr>
+      
+      <h2>Fireflies in the Dark</h2>
+      
+      <p>Growing up, my father took me to the countryside where he was raised. The nights were so dark I'd lose my bearings. Then I'd find the fireflies—scattered sparks at first, blinking without order. But if I stood still long enough, something strange would happen. The flashes would start to align. And then the whole field would pulse at once, as if the darkness itself had learned to breathe.</p>
+      
+      <p>That image never left me. Years later, I learned what I'd witnessed has a name: <span class="highlight">the Kuramoto model</span>.</p>
+      
+      <hr>
+      
+      <h2>The Clock Inside Each Firefly</h2>
+      
+      <p>Imagine every firefly carries an invisible clock—a hand sweeping around a circle, never stopping. The hand's position is called the <em>phase</em>, \(\phi\). Picture the circle split in two: when the hand crosses into the top half, the firefly flashes; when it moves through the bottom half, darkness. One full rotation is one flash cycle.</p>
+      
+      <p>Not all clocks tick at the same speed. Each firefly has its own <em>natural frequency</em>, \(\omega\)—some slightly faster, some slower. If fireflies never interacted, these differences would slowly pull their flashes apart, and the forest would remain a scattered constellation of random sparks.</p>
+      
+      <hr>
+      
+      <h2>Gentle Nudges</h2>
+      
+      <p>Fireflies don't copy flashes or reset their clocks. Instead, they make small adjustments to how fast their clocks run, based on what they see nearby. If neighbors flash before me, I speed up a little. If they flash after me, I slow down. If we're already aligned, I do nothing.</p>
+      
+      <p>Kuramoto captured this in a single elegant term:</p>
+      
+      <div class="formula">
+        \[K \sin(\phi_j - \phi_i)\]
+      </div>
+      
+      <p>This means: <em>how hard should I adjust, and in which direction?</em></p>
+      
+      <div class="formula-explanation">
+        <p>\(\phi_j - \phi_i\) is the gap between my neighbor's clock and mine. Positive means they're ahead of me. Negative means I'm ahead of them.</p>
+        
+        <p>The \(\sin\) function turns that gap into a nudge. Small gap, small nudge. Larger gap, stronger nudge—but only up to a point. And when we're perfectly aligned (\(\phi_j = \phi_i\)), the sine is zero. No push needed. Balance.</p>
+        
+        <p>\(K\) is the coupling strength—how much I care about fitting in. Shy fireflies have low \(K\). Social ones have high \(K\).</p>
+      </div>
+      
+      <hr>
+      
+      <h2>From Chaos to Chorus</h2>
+      
+      <p>Each moment, a firefly updates its phase by combining its own rhythm with the average nudge from everyone around it:</p>
+      
+      <div class="formula">
+        \[\frac{d\phi_i}{dt} = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\phi_j - \phi_i)\]
+      </div>
+      
+      <p>In plain words: <em>my new speed = my natural pace + the average pull from all my neighbors.</em></p>
+      
+      <p>The nudge is added, not multiplied. Over time, large gaps shrink until the clocks fall into step. And once synchronized, the sine terms vanish. No force remains. The rhythm holds on its own.</p>
+      
+      <hr>
+      
+      <h2>One Pulse</h2>
+      
+      <p>The same logic echoes in unexpected places—heart cells finding a steady beat, neurons falling into rhythm, audiences clapping in unison, traffic lights releasing green waves across a city.</p>
+      
+      <p>Different systems, same mechanism: local adjustments, repeated often enough, turn chaos into chorus.</p>
+      
+      <p>This reminds me of another pattern: markets. Buyers and sellers, each adjusting locally, somehow finding equilibrium. Is that the same mechanism? Or does something deeper separate fireflies from prices? I'm not sure yet.</p>
+      
+      <p class="closing">I still think about those nights in the countryside. Standing in the dark, disoriented at first, then watching the field find its rhythm without me. A small mystery I didn't need to solve to feel.</p>
+    </article>
+
+    <!-- Giscus comment embed -->
+    <div class="giscus-wrapper">
+      <script src="https://giscus.app/client.js"
+        data-repo="minnatran36/minnatran36.github.io"
+        data-repo-id="R_kgDOPIDQVA"
+        data-category="General"
+        data-category-id="DIC_kwDOPIDQVM4CslJz"
+        data-mapping="url"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="1"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
+  </div>
+
+  <script>
+    const TWO_PI = 2 * Math.PI;
+    const FLASH_DURATION = 0.15;
+
+    let numFireflies = 50;
+    let couplingK = 0.5;
+    let basePeriod = 2.0;
+    let neighborRadius = 150;
+
+    class Firefly {
+      constructor(x, y, canvasWidth, canvasHeight) {
+        this.x = x;
+        this.y = y;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.phase = Math.random() * TWO_PI;
+        const variation = 0.9 + Math.random() * 0.2;
+        this.naturalFreq = (TWO_PI / basePeriod) * variation;
+        this.flashTimer = 0;
+        this.vx = (Math.random() - 0.5) * 10;
+        this.vy = (Math.random() - 0.5) * 10;
+      }
+
+      isFlashing() {
+        return this.flashTimer > 0;
+      }
+
+      getNeighbors(allFireflies) {
+        const neighbors = [];
+        for (const other of allFireflies) {
+          if (other === this) continue;
+          const dx = other.x - this.x;
+          const dy = other.y - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < neighborRadius) neighbors.push(other);
+        }
+        return neighbors;
+      }
+
+      update(dt, allFireflies) {
+        const neighbors = this.getNeighbors(allFireflies);
+        let coupling = 0;
+
+        if (neighbors.length > 0) {
+          for (const neighbor of neighbors) {
+            coupling += Math.sin(neighbor.phase - this.phase);
+          }
+          coupling = (couplingK / neighbors.length) * coupling;
+        }
+
+        this.phase += (this.naturalFreq + coupling) * dt;
+
+        if (this.phase >= TWO_PI) {
+          this.phase -= TWO_PI;
+          this.flashTimer = FLASH_DURATION;
+        }
+
+        if (this.flashTimer > 0) this.flashTimer -= dt;
+
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+
+        if (this.x < 20 || this.x > this.canvasWidth - 20) this.vx *= -1;
+        if (this.y < 20 || this.y > this.canvasHeight - 20) this.vy *= -1;
+
+        this.x = Math.max(10, Math.min(this.canvasWidth - 10, this.x));
+        this.y = Math.max(10, Math.min(this.canvasHeight - 10, this.y));
+      }
+    }
+
+    let fireflies = [];
+    let running = false;
+    let simulatedTime = 0;
+
+    const canvas = document.getElementById('firefly-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function initCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+
+    function initFireflies() {
+      fireflies = [];
+      simulatedTime = 0;
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+
+      for (let i = 0; i < numFireflies; i++) {
+        const x = 30 + Math.random() * (w - 60);
+        const y = 30 + Math.random() * (h - 60);
+        fireflies.push(new Firefly(x, y, w, h));
+      }
+    }
+
+    function calculateCoherence() {
+      if (fireflies.length === 0) return 0;
+      let sumCos = 0, sumSin = 0;
+
+      for (const ff of fireflies) {
+        sumCos += Math.cos(ff.phase);
+        sumSin += Math.sin(ff.phase);
+      }
+
+      sumCos /= fireflies.length;
+      sumSin /= fireflies.length;
+      return Math.sqrt(sumCos * sumCos + sumSin * sumSin);
+    }
+
+    function render() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+
+      ctx.fillStyle = 'rgba(0, 60, 40, 0.3)';
+      ctx.fillRect(0, 0, w, h);
+
+      for (const ff of fireflies) {
+        if (ff.isFlashing()) {
+          const gradient = ctx.createRadialGradient(ff.x, ff.y, 0, ff.x, ff.y, 30);
+          gradient.addColorStop(0, 'rgba(255, 232, 179, 0.9)');
+          gradient.addColorStop(0.3, 'rgba(255, 232, 179, 0.4)');
+          gradient.addColorStop(1, 'rgba(255, 232, 179, 0)');
+
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, 30, 0, TWO_PI);
+          ctx.fillStyle = gradient;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, 4, 0, TWO_PI);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, 2, 0, TWO_PI);
+          ctx.fillStyle = 'rgba(255, 232, 179, 0.3)';
+          ctx.fill();
+        }
+      }
+
+      const coherence = calculateCoherence();
+      document.getElementById('coherence-value').textContent = coherence.toFixed(2);
+      document.getElementById('time-value').textContent = simulatedTime.toFixed(1) + 's';
+      document.getElementById('coherence-bar').style.width = (coherence * 100) + '%';
+    }
+
+    const DT = 0.016;
+
+    function mainLoop() {
+      if (!running) return;
+      for (const ff of fireflies) ff.update(DT, fireflies);
+      simulatedTime += DT;
+      render();
+      requestAnimationFrame(mainLoop);
+    }
+
+    function start() {
+      if (running) {
+        running = false;
+        document.getElementById('start-btn').textContent = '✦ Begin';
+      } else {
+        running = true;
+        document.getElementById('start-btn').textContent = '❚❚ Pause';
+        requestAnimationFrame(mainLoop);
+      }
+    }
+
+    function scramble() {
+      for (const ff of fireflies) ff.phase = Math.random() * TWO_PI;
+      render();
+    }
+
+    function reset() {
+      running = false;
+      document.getElementById('start-btn').textContent = '✦ Begin';
+      initFireflies();
+      const dpr = window.devicePixelRatio || 1;
+      ctx.fillStyle = 'rgba(0, 60, 40, 1)';
+      ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      render();
+    }
+
+    document.getElementById('start-btn').addEventListener('click', start);
+    document.getElementById('scramble-btn').addEventListener('click', scramble);
+    document.getElementById('reset-btn').addEventListener('click', reset);
+
+    document.getElementById('k-slider').addEventListener('input', (e) => {
+      couplingK = parseFloat(e.target.value);
+      document.getElementById('k-display').textContent = couplingK.toFixed(2);
+    });
+
+    document.getElementById('count-slider').addEventListener('input', (e) => {
+      numFireflies = parseInt(e.target.value);
+      document.getElementById('count-display').textContent = numFireflies;
+      document.getElementById('firefly-count').textContent = numFireflies;
+      initFireflies();
+      render();
+    });
+
+    document.getElementById('period-slider').addEventListener('input', (e) => {
+      basePeriod = parseFloat(e.target.value);
+      document.getElementById('period-display').textContent = basePeriod.toFixed(2) + 's';
+      for (const ff of fireflies) {
+        const variation = 0.9 + Math.random() * 0.2;
+        ff.naturalFreq = (TWO_PI / basePeriod) * variation;
+      }
+    });
+
+    document.getElementById('radius-slider').addEventListener('input', (e) => {
+      neighborRadius = parseInt(e.target.value);
+      document.getElementById('radius-display').textContent = neighborRadius + 'px';
+    });
+
+    window.addEventListener('resize', () => {
+      initCanvas();
+      initFireflies();
+      render();
+    });
+
+    initCanvas();
+    initFireflies();
+    render();
+  </script>
+</body>
+</html>
