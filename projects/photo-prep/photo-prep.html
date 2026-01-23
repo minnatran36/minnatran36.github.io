@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2×2 Photo Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style/entry-style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Lexend', sans-serif;
+      background-color: #00724c;
+      color: white;
+      line-height: 1.6;
+    }
+
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      opacity: 0.85;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+    }
+
+    /* App-specific styles */
+    .app-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upload-zone:hover {
+      border-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .upload-zone.dragover {
+      border-color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      opacity: 0.7;
+    }
+
+    .upload-text {
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    .upload-text strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .crop-area {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: move;
+      display: none;
+    }
+
+    .crop-area.active {
+      display: block;
+    }
+
+    #sourceImage {
+      position: absolute;
+      max-width: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .crop-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .crop-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      aspect-ratio: 1;
+      border: 2px solid white;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+    }
+
+    .crop-guides {
+      position: absolute;
+      inset: 0;
+    }
+
+    .crop-guides::before,
+    .crop-guides::after {
+      content: '';
+      position: absolute;
+      background: transparent;
+    }
+
+    .crop-guides::before {
+      left: 33.33%;
+      right: 33.33%;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .crop-guides::after {
+      top: 33.33%;
+      bottom: 33.33%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .controls {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .controls.active {
+      display: block;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .control-label {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      width: 50px;
+      flex-shrink: 0;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .preview-section {
+      margin-top: 2.5rem;
+    }
+
+    .preview-canvas-container {
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      aspect-ratio: 6/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #previewCanvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .output-info {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      opacity: 0.7;
+    }
+
+    .info-value {
+      font-weight: 700;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #00724c;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .placeholder {
+      aspect-ratio: 6/4;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      opacity: 0.6;
+    }
+
+    .placeholder svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .placeholder span {
+      font-size: 0.9rem;
+    }
+
+    .tips {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tips h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .tips ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tips li {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      padding-left: 1.25rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .tips li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="../index.html">Home</a>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+      <h1>2×2 Photo Prep</h1>
+      <p class="subtitle">Upload your portrait, adjust the crop, and download a print-ready 4×6 size with four 2×2 photos tiled. For passport photo ID.</p>
+
+      <!-- Upload & Crop Section -->
+      <div class="app-section">
+        <div class="section-label">1. Upload & Adjust</div>
+
+        <div class="upload-zone" id="uploadZone">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <p class="upload-text">
+            <strong>Click to upload</strong> or drag and drop<br>
+            PNG, JPG up to 10MB
+          </p>
+          <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="crop-area" id="cropArea">
+          <img id="sourceImage" alt="Source">
+          <div class="crop-overlay">
+            <div class="crop-box">
+              <div class="crop-guides"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" id="controls">
+          <div class="control-row">
+            <span class="control-label">Zoom</span>
+            <input type="range" id="zoomSlider" min="100" max="300" value="100">
+          </div>
+          <button class="btn btn-secondary" id="resetBtn">
+            ↺ Upload New Photo
+          </button>
+        </div>
+      </div>
+
+      <!-- Output Section -->
+      <div class="app-section preview-section">
+        <div class="section-label">2. 4×6 Print Preview</div>
+
+        <div id="previewPlaceholder" class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M3 15l4-4a2 2 0 012.8 0L15 16"/>
+            <path d="M14 14l1-1a2 2 0 012.8 0L21 16"/>
+          </svg>
+          <span>Upload a photo to see preview</span>
+        </div>
+
+        <div id="previewContainer" class="preview-canvas-container hidden">
+          <canvas id="previewCanvas" width="1800" height="1200"></canvas>
+        </div>
+
+        <div class="output-info">
+          <div class="info-row">
+            <span class="info-label">Output Size</span>
+            <span class="info-value">4" × 6" @ 300 DPI</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Resolution</span>
+            <span class="info-value">1800 × 1200 px</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Layout</span>
+            <span class="info-value">4× 2" × 2" photos</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="downloadBtn" disabled>
+          ↓ Download 4×6 Print File
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const cropArea = document.getElementById('cropArea');
+    const sourceImage = document.getElementById('sourceImage');
+    const controls = document.getElementById('controls');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const resetBtn = document.getElementById('resetBtn');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewCanvas = document.getElementById('previewCanvas');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const ctx = previewCanvas.getContext('2d');
+
+    // State
+    let imageLoaded = false;
+    let imgNaturalWidth = 0;
+    let imgNaturalHeight = 0;
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialOffsetX = 0;
+    let initialOffsetY = 0;
+
+    // 4x6 at 300 DPI = 1800 x 1200 pixels
+    // 2x2 at 300 DPI = 600 x 600 pixels
+    const OUTPUT_WIDTH = 1800;
+    const OUTPUT_HEIGHT = 1200;
+    const PHOTO_SIZE = 600;
+
+    // Upload handling
+    uploadZone.addEventListener('click', () => fileInput.click());
+    
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        loadImage(file);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        loadImage(file);
+      }
+    });
+
+    function loadImage(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        sourceImage.onload = () => {
+          imgNaturalWidth = sourceImage.naturalWidth;
+          imgNaturalHeight = sourceImage.naturalHeight;
+          
+          const cropAreaRect = cropArea.getBoundingClientRect();
+          const cropBoxSize = cropAreaRect.width * 0.8;
+          
+          const minDimension = Math.min(imgNaturalWidth, imgNaturalHeight);
+          scale = cropBoxSize / minDimension;
+          
+          offsetX = (cropAreaRect.width - imgNaturalWidth * scale) / 2;
+          offsetY = (cropAreaRect.height - imgNaturalHeight * scale) / 2;
+          
+          updateImageTransform();
+          
+          uploadZone.classList.add('hidden');
+          cropArea.classList.add('active');
+          controls.classList.add('active');
+          previewPlaceholder.classList.add('hidden');
+          previewContainer.classList.remove('hidden');
+          downloadBtn.disabled = false;
+          imageLoaded = true;
+          
+          zoomSlider.value = 100;
+          
+          updatePreview();
+        };
+        sourceImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateImageTransform() {
+      sourceImage.style.width = `${imgNaturalWidth * scale}px`;
+      sourceImage.style.height = `${imgNaturalHeight * scale}px`;
+      sourceImage.style.left = `${offsetX}px`;
+      sourceImage.style.top = `${offsetY}px`;
+    }
+
+    zoomSlider.addEventListener('input', (e) => {
+      const cropAreaRect = cropArea.getBoundingClientRect();
+      const cropBoxSize = cropAreaRect.width * 0.8;
+      const minDimension = Math.min(imgNaturalWidth, imgNaturalHeight);
+      const baseScale = cropBoxSize / minDimension;
+      
+      const zoomFactor = e.target.value / 100;
+      const newScale = baseScale * zoomFactor;
+      
+      const centerX = cropAreaRect.width / 2;
+      const centerY = cropAreaRect.height / 2;
+      
+      const imageCenterX = (centerX - offsetX) / scale;
+      const imageCenterY = (centerY - offsetY) / scale;
+      
+      scale = newScale;
+      offsetX = centerX - imageCenterX * scale;
+      offsetY = centerY - imageCenterY * scale;
+      
+      updateImageTransform();
+      updatePreview();
+    });
+
+    cropArea.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      initialOffsetX = offsetX;
+      initialOffsetY = offsetY;
+      cropArea.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      
+      offsetX = initialOffsetX + dx;
+      offsetY = initialOffsetY + dy;
+      
+      updateImageTransform();
+      updatePreview();
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      cropArea.style.cursor = 'move';
+    });
+
+    cropArea.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+        initialOffsetX = offsetX;
+        initialOffsetY = offsetY;
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      
+      const dx = e.touches[0].clientX - dragStartX;
+      const dy = e.touches[0].clientY - dragStartY;
+      
+      offsetX = initialOffsetX + dx;
+      offsetY = initialOffsetY + dy;
+      
+      updateImageTransform();
+      updatePreview();
+    });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    resetBtn.addEventListener('click', () => {
+      uploadZone.classList.remove('hidden');
+      cropArea.classList.remove('active');
+      controls.classList.remove('active');
+      previewPlaceholder.classList.remove('hidden');
+      previewContainer.classList.add('hidden');
+      downloadBtn.disabled = true;
+      imageLoaded = false;
+      fileInput.value = '';
+    });
+
+    function updatePreview() {
+      if (!imageLoaded) return;
+      
+      const cropAreaRect = cropArea.getBoundingClientRect();
+      const cropBoxSize = cropAreaRect.width * 0.8;
+      const cropBoxLeft = (cropAreaRect.width - cropBoxSize) / 2;
+      const cropBoxTop = (cropAreaRect.height - cropBoxSize) / 2;
+      
+      const srcX = (cropBoxLeft - offsetX) / scale;
+      const srcY = (cropBoxTop - offsetY) / scale;
+      const srcSize = cropBoxSize / scale;
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+      
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 1;
+      
+      ctx.beginPath();
+      ctx.moveTo(OUTPUT_WIDTH / 2, 0);
+      ctx.lineTo(OUTPUT_WIDTH / 2, OUTPUT_HEIGHT);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(0, OUTPUT_HEIGHT / 2);
+      ctx.lineTo(OUTPUT_WIDTH, OUTPUT_HEIGHT / 2);
+      ctx.stroke();
+      
+      const positions = [
+        { x: 150, y: 0 },
+        { x: 150 + 600 + 300, y: 0 },
+        { x: 150, y: 600 },
+        { x: 150 + 600 + 300, y: 600 },
+      ];
+      
+      positions.forEach(pos => {
+        ctx.drawImage(
+          sourceImage,
+          srcX, srcY, srcSize, srcSize,
+          pos.x, pos.y, PHOTO_SIZE, PHOTO_SIZE
+        );
+      });
+    }
+
+    downloadBtn.addEventListener('click', () => {
+      if (!imageLoaded) return;
+      
+      const link = document.createElement('a');
+      link.download = 'passport-photo-4x6.jpg';
+      link.href = previewCanvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+    });
+  </script>
+</body>
+</html>
