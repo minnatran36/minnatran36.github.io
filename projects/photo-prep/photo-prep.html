@@ -358,7 +358,7 @@
   <div class="page-wrapper">
     <div class="container">
       <h1>2×2 Photo Prep</h1>
-      <p class="subtitle">Upload your portrait, adjust the crop, and download a print-ready 4×6 size with four 2×2 photos tiled. For passport photo ID.</p>
+      <p class="subtitle">Upload your portrait, adjust the crop, and download a print-ready 4×6 with four 2×2 photos tiled. Perfect for passport and ID photos at CVS, Walgreens, or Staples.</p>
 
       <!-- Upload & Crop Section -->
       <div class="app-section">
@@ -432,6 +432,18 @@
         </button>
       </div>
 
+      <!-- Tips -->
+      <div class="tips">
+        <h3>Tips for Best Results</h3>
+        <ul>
+          <li>Use a plain white or light background</li>
+          <li>Face should be centered and well-lit</li>
+          <li>Keep neutral expression for official IDs</li>
+          <li>Print at actual size (no scaling) at CVS/Walgreens/Staples</li>
+          <li>Select "4×6" print size and "no borders"</li>
+          <li>Cut along the white lines after printing</li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -524,7 +536,12 @@
           
           zoomSlider.value = 100;
           
-          updatePreview();
+          // Wait for DOM to update before calculating preview
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              updatePreview();
+            });
+          });
         };
         sourceImage.src = e.target.result;
       };
@@ -630,6 +647,8 @@
       if (!imageLoaded) return;
       
       const cropAreaRect = cropArea.getBoundingClientRect();
+      if (cropAreaRect.width === 0) return; // Not rendered yet
+      
       const cropBoxSize = cropAreaRect.width * 0.8;
       const cropBoxLeft = (cropAreaRect.width - cropBoxSize) / 2;
       const cropBoxTop = (cropAreaRect.height - cropBoxSize) / 2;
@@ -637,6 +656,9 @@
       const srcX = (cropBoxLeft - offsetX) / scale;
       const srcY = (cropBoxTop - offsetY) / scale;
       const srcSize = cropBoxSize / scale;
+      
+      // Guard against invalid source dimensions
+      if (srcSize <= 0 || !isFinite(srcX) || !isFinite(srcY)) return;
       
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
