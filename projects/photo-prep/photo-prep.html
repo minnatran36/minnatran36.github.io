@@ -352,7 +352,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="../../index.html">Home</a>
+    <a href="../index.html">Home</a>
   </nav>
 
   <div class="page-wrapper">
@@ -515,17 +515,7 @@
           imgNaturalWidth = sourceImage.naturalWidth;
           imgNaturalHeight = sourceImage.naturalHeight;
           
-          const cropAreaRect = cropArea.getBoundingClientRect();
-          const cropBoxSize = cropAreaRect.width * 0.8;
-          
-          const minDimension = Math.min(imgNaturalWidth, imgNaturalHeight);
-          scale = cropBoxSize / minDimension;
-          
-          offsetX = (cropAreaRect.width - imgNaturalWidth * scale) / 2;
-          offsetY = (cropAreaRect.height - imgNaturalHeight * scale) / 2;
-          
-          updateImageTransform();
-          
+          // Show elements FIRST so we can get real dimensions
           uploadZone.classList.add('hidden');
           cropArea.classList.add('active');
           controls.classList.add('active');
@@ -533,19 +523,30 @@
           previewContainer.classList.remove('hidden');
           downloadBtn.disabled = false;
           imageLoaded = true;
-          
           zoomSlider.value = 100;
           
-          // Wait for DOM to update before calculating preview
+          // Wait for layout, then calculate and render
           requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              updatePreview();
-            });
+            initializeImagePosition();
+            updatePreview();
           });
         };
         sourceImage.src = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+    
+    function initializeImagePosition() {
+      const cropAreaRect = cropArea.getBoundingClientRect();
+      const cropBoxSize = cropAreaRect.width * 0.8;
+      
+      const minDimension = Math.min(imgNaturalWidth, imgNaturalHeight);
+      scale = cropBoxSize / minDimension;
+      
+      offsetX = (cropAreaRect.width - imgNaturalWidth * scale) / 2;
+      offsetY = (cropAreaRect.height - imgNaturalHeight * scale) / 2;
+      
+      updateImageTransform();
     }
 
     function updateImageTransform() {
@@ -653,16 +654,19 @@
       const cropBoxLeft = (cropAreaRect.width - cropBoxSize) / 2;
       const cropBoxTop = (cropAreaRect.height - cropBoxSize) / 2;
       
+      // Calculate source rectangle in original image coordinates
       const srcX = (cropBoxLeft - offsetX) / scale;
       const srcY = (cropBoxTop - offsetY) / scale;
       const srcSize = cropBoxSize / scale;
       
       // Guard against invalid source dimensions
-      if (srcSize <= 0 || !isFinite(srcX) || !isFinite(srcY)) return;
+      if (srcSize <= 0 || !isFinite(srcX) || !isFinite(srcY) || !isFinite(srcSize)) return;
       
+      // Clear and fill with white
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
       
+      // Draw cut guides
       ctx.strokeStyle = '#cccccc';
       ctx.lineWidth = 1;
       
@@ -676,19 +680,25 @@
       ctx.lineTo(OUTPUT_WIDTH, OUTPUT_HEIGHT / 2);
       ctx.stroke();
       
+      // Position 4 photos in a 2x2 grid centered on 4x6
       const positions = [
         { x: 150, y: 0 },
-        { x: 150 + 600 + 300, y: 0 },
+        { x: 1050, y: 0 },
         { x: 150, y: 600 },
-        { x: 150 + 600 + 300, y: 600 },
+        { x: 1050, y: 600 },
       ];
       
+      // Draw the cropped region to each position
       positions.forEach(pos => {
-        ctx.drawImage(
-          sourceImage,
-          srcX, srcY, srcSize, srcSize,
-          pos.x, pos.y, PHOTO_SIZE, PHOTO_SIZE
-        );
+        try {
+          ctx.drawImage(
+            sourceImage,
+            srcX, srcY, srcSize, srcSize,
+            pos.x, pos.y, PHOTO_SIZE, PHOTO_SIZE
+          );
+        } catch (e) {
+          console.error('Draw error:', e);
+        }
       });
     }
 
