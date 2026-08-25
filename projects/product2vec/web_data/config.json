@@ -1,7 +1,0 @@
-{
-  "model_name": "Product2Vec",
-  "num_products": 47575,
-  "vector_dimensions": 100,
-  "training_baskets": 3058106,
-  "algorithm": "Skip-gram with Negative Sampling"
-}
